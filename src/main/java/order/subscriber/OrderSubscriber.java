@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dbConnection.DBConnector;
 import order.Order;
+import order.events.EventReceived;
 import order.service.OrderService;
 import redisService.RedisHandler;
 
@@ -17,23 +18,26 @@ public class OrderSubscriber {
     RedisHandler redisHandler;
 
 
-    public OrderSubscriber() {
+    public OrderSubscriber() throws SQLException {
        this.orderService = new OrderService();
        this.redisHandler = new RedisHandler();
     }
     ObjectMapper objectMapper = new ObjectMapper();
 
 
-    public void checkEvent() throws JsonProcessingException {
+    public void checkEvent() throws JsonProcessingException, SQLException {
         List<String> events = this.redisHandler.get_event();
         for (String event: events){
 
-            Order order = objectMapper.readValue(event, Order.class);
-            if (order.routing_key.equals("order")){
-                switch (order.event){
+            EventReceived eventReceived = objectMapper.readValue(event, EventReceived.class);
+            if (eventReceived.routing_key.equals("order")){
+                switch (eventReceived.event){
                     case "car_ordered":
-                        this.orderService.updateOrderStatus(order.car);
+                        this.orderService.createOrderStatus(eventReceived.car);
+                    case "car_order_cancelled":
+                        this.orderService.cancelOrder(eventReceived.car.id);
                 }
+
             }
 
 
