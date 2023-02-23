@@ -1,6 +1,8 @@
 package redisService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import order.events.EventReceived;
 import order.events.OrderEvent;
 
 import java.util.List;
@@ -21,4 +23,8 @@ public class RedisHandler {
         this.redisConnector.set_lrange("events_storage", orderEvent);
     }
 
+    public void remove_event_from_list(String event) throws JsonProcessingException {
+
+        this.redisConnector.lrem_list("events_storage", event);
+    }
 }

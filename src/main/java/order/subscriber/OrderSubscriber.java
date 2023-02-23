@@ -34,8 +34,10 @@ public class OrderSubscriber {
                 switch (eventReceived.event){
                     case "car_ordered":
                         this.orderService.createOrderStatus(eventReceived.car);
+                        this.redisHandler.remove_event_from_list(event);
                     case "car_order_cancelled":
                         this.orderService.cancelOrder(eventReceived.car.id);
+                        this.redisHandler.remove_event_from_list(event);
                 }
 
             }

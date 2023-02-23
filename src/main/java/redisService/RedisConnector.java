@@ -25,6 +25,9 @@ public class RedisConnector {
         this.connection.lpush(key, jsonOrderEvent);
     }
 
+    public void lrem_list(String key, String event){
+         this.connection.lrem(key, 0, event);
+    }
 
 
 
