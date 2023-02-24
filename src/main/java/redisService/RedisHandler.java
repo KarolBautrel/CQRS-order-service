@@ -20,7 +20,7 @@ public class RedisHandler {
     }
 
     public void send_event(OrderEvent orderEvent) throws JsonProcessingException {
-        this.redisConnector.set_lrange("events_storage", orderEvent);
+        this.redisConnector.lpush_to_list("events_storage", orderEvent);
     }
 
     public void remove_event_from_list(String event) throws JsonProcessingException {

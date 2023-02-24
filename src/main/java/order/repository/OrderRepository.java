@@ -14,20 +14,25 @@ public class OrderRepository {
     public OrderRepository() throws SQLException {
         this.dbConnector = new DBConnector();
         this.dbConnector.connect();
-       // this.dbConnector.createTables();
+        this.dbConnector.createTables();
     }
 
     public boolean findOrderByCarId(int id) throws SQLException {
         return this.dbConnector.exist(id);
     }
 
-    public void createNewOrder(Car car) throws SQLException {
-        System.out.println("ADding new order");
+    public boolean createNewOrder(Car car) throws SQLException {
+        if (this.findOrderByCarId(car.id)){
+            System.out.println("Order with this ID is in database");
+            return false;
+        }
         this.dbConnector.insertRow(car.id, car.price, "ORDERED");
+        return true;
     }
 
-    public void deleteOrder(int id) throws SQLException{
-        System.out.println("Deleted order of "+ id);
+    public void deleteOrder(int car_id) throws SQLException{
+        this.dbConnector.delete(car_id);
+        System.out.println("Deleted order of "+ car_id);
 
     }
 

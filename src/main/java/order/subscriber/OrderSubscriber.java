@@ -33,11 +33,12 @@ public class OrderSubscriber {
             if (eventReceived.routing_key.equals("order")){
                 switch (eventReceived.event){
                     case "car_ordered":
-                        this.orderService.createOrderStatus(eventReceived.car);
+                        this.orderService.createOrder(eventReceived.car);
                         this.redisHandler.remove_event_from_list(event);
-                    case "car_order_cancelled":
-                        this.orderService.cancelOrder(eventReceived.car.id);
-                        this.redisHandler.remove_event_from_list(event);
+//                    case "car_cancelled":
+//                        this.orderService.cancelOrder(eventReceived.car.id);
+//                        this.redisHandler.remove_event_from_list(event);
+//
                 }
 
             }

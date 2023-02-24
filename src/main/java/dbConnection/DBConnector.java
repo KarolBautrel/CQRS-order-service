@@ -18,8 +18,14 @@ public class DBConnector {
         connection.close();
     }
     public void createTables() throws SQLException {
+
         Statement statement = connection.createStatement();
+        try{
         statement.execute("create table orders (car_id int, price double, status string);");
+    }catch (SQLException e){
+            System.out.println("TABLE ALREADY EXISTS");
+        }
+
     }
 
     public void insertRow(int car_id, double price, String status) throws SQLException {
@@ -29,13 +35,13 @@ public class DBConnector {
 
     public boolean exist(int car_id) throws SQLException {
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT EXISTS(SELECT * FROM orders WHERE order.car_id = '%s');".formatted(car_id));
+        ResultSet resultSet = statement.executeQuery("SELECT EXISTS(SELECT * FROM orders WHERE orders.car_id = '%s');".formatted(car_id));
         return resultSet.getBoolean(1);
     }
 
     public void delete(int car_id) throws SQLException{
         Statement statement = connection.createStatement();
-        statement.executeUpdate("DELETE FROM orders WHERE orders.car.id = '%s');".formatted(car_id));
+        statement.executeUpdate("DELETE FROM orders WHERE orders.car_id = '%s';".formatted(car_id));
     }
 
 }
