@@ -2,6 +2,7 @@ package order.service;
 
 import car.Car;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import dbConnection.OrderModel;
 import order.publisher.OrderPublisher;
 import order.repository.OrderRepository;
 
@@ -27,11 +28,19 @@ public class OrderService {
     public void createOrder(Car car) throws JsonProcessingException, SQLException {
         if(this.orderRepository.createNewOrder(car)){
             this.orderPublisher.publishEvent(car.id, car.price, "ORDERED");
+
         };
     }
 
-    public void cancelOrder(int id) throws  SQLException{
-        this.orderRepository.deleteOrder(id);
+    public void cancelOrder(int car_id) throws  SQLException{
+       if (this.orderRepository.findOrderByCarId(car_id)){
+            this.orderRepository.updateStatusOrder(car_id, "CANCELED");
+           System.out.println("ORDER UPDATED");
+       };
+    }
+
+    public OrderModel getOrderById(int car_id) throws SQLException {
+        return this.orderRepository.getOrderById(3);
     }
 
 }

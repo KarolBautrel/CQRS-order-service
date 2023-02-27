@@ -1,10 +1,7 @@
 package order.subscriber;
 
-import car.Car;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dbConnection.DBConnector;
-import order.Order;
 import order.events.EventReceived;
 import order.service.OrderService;
 import redisService.RedisHandler;
@@ -30,16 +27,16 @@ public class OrderSubscriber {
         for (String event: events){
 
             EventReceived eventReceived = objectMapper.readValue(event, EventReceived.class);
-            if (eventReceived.routing_key.equals("order")){
-                switch (eventReceived.event){
-                    case "car_ordered":
-                        this.orderService.createOrder(eventReceived.car);
+               if (eventReceived.event.equals("car_ordered")) {
+                       this.orderService.createOrder(eventReceived.car);
+                       this.redisHandler.remove_event_from_list(event);
+
+               }
+               if (eventReceived.event.equals("car_cancelled")){
+                        this.orderService.cancelOrder(eventReceived.car.id);
                         this.redisHandler.remove_event_from_list(event);
-//                    case "car_cancelled":
-//                        this.orderService.cancelOrder(eventReceived.car.id);
-//                        this.redisHandler.remove_event_from_list(event);
-//
-                }
+
+
 
             }
 

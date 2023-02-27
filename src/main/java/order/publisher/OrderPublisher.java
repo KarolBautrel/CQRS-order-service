@@ -1,11 +1,14 @@
 package order.publisher;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import dbConnection.OrderModel;
 import order.events.OrderEvent;
 import order.service.OrderService;
 import redisService.RedisHandler;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class OrderPublisher {
 
